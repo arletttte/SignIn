@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-In and Appointment Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        main {
+            padding: 2rem;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            margin-top: 2rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sign-In and Appointment Tracker</h1>
+    </header>
+    <main>
+        <form id="signInForm">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="time" id="appointmentTime" required>
+            <button type="submit">Sign In</button>
+        </form>
+        <button id="sendEmailButton">Send to Email</button>
+        <table id="appointmentsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Appointment Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </main>
+    <script>
+        document.getElementById('signInForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const table = document.getElementById('appointmentsTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const nameCell = newRow.insertCell(0);
+            const timeCell = newRow.insertCell(1);
+            const deleteCell = newRow.insertCell(2);
+            
+            nameCell.textContent = name;
+            timeCell.textContent = appointmentTime;
+            
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                table.deleteRow(newRow.rowIndex - 1);
+            });
+            deleteCell.appendChild(deleteButton);
+            
+            document.getElementById('signInForm').reset();
+        });
+
+        document.getElementById('sendEmailButton').addEventListener('click', function() {
+            const table = document.getElementById('appointmentsTable');
+            let emailBody = 'Name,Appointment Time\n';
+            for (let i = 1; i < table.rows.length; i++) {
+                const cells = table.rows[i].cells;
+                emailBody += `${cells[0].textContent},${cells[1].textContent}\n`;
+            }
+            const mailtoLink = `mailto:?subject=Sign-In Sheet&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
+        });
+    </script>
+</body>
+</html>
